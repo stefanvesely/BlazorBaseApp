@@ -1,0 +1,50 @@
+﻿@page "/"
+@using Model
+@using Repositories.Interfaces
+@using Microsoft.EntityFrameworkCore
+@inject IPersonRepository PersonReporistory
+@inject IInfoRepository InfoRepository
+@inject IJSRuntime _jsRuntime
+
+
+<div class="row mt-2 mb-5">
+    <h3 class="card-title text-info mb-3 ml-3">Please Login</h3>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" @bind-value="sUsername" class="form-control"></input>                        
+                    </div>
+                     <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" placeholder="Password" @bind-value="sPassword" class="form-control"></input>                        
+                    </div>                
+                     <div class="form-group">
+                        <button class="btn btn-primary" @onclick="TestLogin">Test Login</button>
+                        
+                    </div>
+              
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string sUsername { get; set; } = "";
+
+    private string sPassword { get; set; } = "";
+
+    private async Task TestLogin()
+    {
+        var CreatedResult = await PersonReporistory.GetPerson(sUsername, sPassword);
+        if (CreatedResult != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowToastr", "success", "User Created!");
+        }
+        else
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowToastr", "error", "User Created!");
+        }
+    }
+}
